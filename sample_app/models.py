@@ -8,7 +8,7 @@ class Author(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return u'%s' % self.name
+        return  self.name
 
 
 class Question(models.Model):
