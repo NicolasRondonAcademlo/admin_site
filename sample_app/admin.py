@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib import admin
 from .models import *
 # Register your models here.
@@ -11,6 +13,7 @@ class AuthorAdmin(admin.ModelAdmin):
     ]
 
     list_display = ('name', 'created_date', 'updated_date')
+    search_fields = ('name',)
 
 class QuestionAdmin(admin.ModelAdmin):
     fieldsets = [
@@ -28,12 +31,21 @@ class QuestionAdmin(admin.ModelAdmin):
         })
     ]
 
-    list_display = ('question_text','ref_author', 'pub_date', 'created_date', 'updated_date')
+    list_display = ('question_text','ref_author', 'pub_date', 'created_date', 'updated_date',
+                    'has_been_published')
     list_display_links = ('ref_author',)
     list_editable = ('question_text',)
     date_hierarchy = 'pub_date'
     save_on_top = True
     list_filter = ('ref_author', 'pub_date')
+    autocomplete_fields = ['ref_author']
+
+
+    def has_been_published(self, obj):
+        present =  datetime.now()
+        return obj.pub_date.date() < present.date()
+
+    has_been_published.boolean = True
 
 class ChoiceAdmin(admin.ModelAdmin):
     list_display = ('question', 'choice_text', 'votes', 'created_date', 'updated_date')
